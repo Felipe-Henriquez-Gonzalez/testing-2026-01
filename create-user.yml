@@ -59,6 +59,6 @@
       rescue:
         - ansible.builtin.fail:
             msg: "TC-1640-2-3-1 FAILED"
-      always:
-        - ansible.builtin.include_tasks: ../../reset/user.yml
+ #     always:
+ #       - ansible.builtin.include_tasks: ../../reset/user.yml
 ...
