@@ -3,7 +3,7 @@
   hosts: all
   sources:
     - name: Listen for messages
-      eda.builtin.webhook:
+      ansible.eda.webhoo:
         host: 0.0.0.0
         port: 6001
 
