@@ -5,7 +5,7 @@
     - name: Listen for messages
       ansible.eda.webhook:
         host: 0.0.0.0
-        port: 6001
+        port: 6022
 
   rules:
     - name: Debug evento recibido
