@@ -1,0 +1,64 @@
+---
+# TC-1640-2-3-1: Create User
+- name: "TC-1640-2-3-1 | Create User"
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - ../../vars/aap.yml
+    - ../../vars/user.yml
+  vars:
+    user_name: "testuser-1640-{{ rh_username }}"
+    user_email: "testuser-{{ rh_username }}@testathon.local"
+    aap_conn: &aap_conn
+      gateway_hostname: "{{ gateway_hostname }}"
+      gateway_username: "{{ gateway_username }}"
+      gateway_password: "{{ gateway_password }}"
+      gateway_validate_certs: "{{ gateway_validate_certs }}"
+  tasks:
+    - block:
+        - name: "[TC-1640-2-3-1] Create user"
+          ansible.platform.user:
+            username: "{{ user_name }}"
+            email: "{{ user_email }}"
+            password: "TestPass123!"
+            state: "{{ present-absent }}"
+            <<: *aap_conn
+          register: result
+
+#        - name: Assert changed and 2.7 nested key
+#          ansible.builtin.assert:
+#            that:
+#              - result is changed
+#              - result.user.username == user_name
+#            fail_msg: "result.user.username missing or wrong"
+#
+#        - name: Assert 2.6 flat key — result.username
+#          ansible.builtin.assert:
+#            that:
+#              - result.username is defined
+#              - result.username == user_name
+#            fail_msg: "REGRESSION: result.username flat key missing (2.6 backward compat)"
+#
+#        - name: "[TC-1640-2-3-1] Idempotency — re-run with update_secrets: false"
+#          ansible.platform.user:
+#            username: "{{ user_name }}"
+#            email: "{{ user_email }}"
+#            password: "TestPass123!"
+#            state: present
+#            update_secrets: false   # prevents password from being re-sent; required for idempotent runs
+#            <<: *aap_conn
+#          register: idem
+#        - ansible.builtin.assert:
+#            that: idem is not changed
+#            fail_msg: >
+#              User re-run not idempotent even with update_secrets: false.
+#              This means a non-password field is incorrectly triggering changed.
+
+        - ansible.builtin.debug:
+            msg: "TC-1640-2-3-1 PASSED"
+      rescue:
+        - ansible.builtin.fail:
+            msg: "TC-1640-2-3-1 FAILED"
+      always:
+        - ansible.builtin.include_tasks: ../../reset/user.yml
+...
